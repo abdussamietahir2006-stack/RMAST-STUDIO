@@ -884,7 +884,7 @@ export default function Hero({ data = {}, images = {} }: HeroCMSData) {
 
           {/* Typewriter */}
           <motion.p variants={fadeUp} style={{ fontSize: '1.1rem', color: 'rgba(232,245,236,0.65)', marginBottom: '1.8rem', fontWeight: 300 }}>
-            I&apos;m a — <Typewriter />
+            We are — <Typewriter />
           </motion.p>
 
           {/* Description with animated border */}

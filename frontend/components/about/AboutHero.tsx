@@ -281,7 +281,7 @@ export default function AboutHero({ data = {}, images = {} }: AboutHeroCMSData) 
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.25 }}
             style={{ fontSize: '1.1rem', color: 'rgba(232,245,236,0.5)', marginBottom: '1.8rem', fontWeight: 300 }}
           >
-            I&apos;m a — <Typewriter roles={rolesArray} />
+            We are — <Typewriter roles={rolesArray} />
           </motion.p>
 
           {/* Description */}
