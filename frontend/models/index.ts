@@ -9,6 +9,7 @@ const LeadSchema = new Schema({
   message: { type: String, required: true },
   source:  { type: String, enum: ['contact_form', 'booking_form', 'referral', 'other'], default: 'contact_form' },
   status:  { type: String, enum: ['new', 'contacted', 'qualified', 'converted', 'lost'], default: 'new' },
+  service: { type: String },
 }, { timestamps: true });
 
 // ── Booking ───────────────────────────────────────────────────────────────────
@@ -21,6 +22,11 @@ const BookingSchema = new Schema({
   timezone:      { type: String },
   notes:         { type: String },
   status:        { type: String, enum: ['pending', 'confirmed', 'cancelled', 'completed'], default: 'pending' },
+  whatsapp:      { type: String },
+  service:       { type: String },
+  reason:        { type: String },
+  date:          { type: String },
+  time:          { type: String },
 }, { timestamps: true });
 
 // ── Subscriber ────────────────────────────────────────────────────────────────

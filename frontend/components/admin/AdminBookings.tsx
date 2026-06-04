@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '@/lib/api';
 
-interface Booking { _id: string; name: string; email: string; company?: string; phone?: string; preferredTime?: string; timezone?: string; notes?: string; status: string; createdAt: string; }
+interface Booking { _id: string; name: string; email: string; company?: string; phone?: string; preferredTime?: string; timezone?: string; notes?: string; status: string; createdAt: string; whatsapp?: string; service?: string; reason?: string; date?: string; time?: string; }
 
 const statusColor = (s: string) => ({ pending:'#ffca28', confirmed:'#52b788', cancelled:'#ff6b6b', completed:'#00e5ff' }[s] || 'rgba(232,245,236,0.3)');
 const fmt = (d: string) => new Date(d).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
@@ -92,8 +92,8 @@ export default function AdminBookings() {
                   </td>
                   <td style={{ padding:'12px 16px', color:'rgba(232,245,236,0.45)', fontSize:'13px' }}>{b.email}</td>
                   <td style={{ padding:'12px 16px' }}>
-                    <p style={{ color:'#e8f5ec', fontSize:'13px', margin:'0 0 1px' }}>{b.preferredTime||'—'}</p>
-                    <p style={{ color:'rgba(232,245,236,0.25)', fontSize:'11px', margin:0 }}>{b.timezone||''}</p>
+                    <p style={{ color:'#e8f5ec', fontSize:'13px', margin:'0 0 1px' }}>{b.date ? `${b.date} @ ${b.time}` : (b.preferredTime || '—')}</p>
+                    <p style={{ color:'rgba(232,245,236,0.25)', fontSize:'11px', margin:0 }}>{b.service ? `Service: ${b.service}` : (b.timezone || '')}</p>
                   </td>
                   <td style={{ padding:'12px 16px' }}>
                     <span style={{ padding:'3px 9px', borderRadius:'6px', background:`${statusColor(b.status)}12`, color:statusColor(b.status), fontSize:'10px', fontWeight:700, border:`1px solid ${statusColor(b.status)}28`, textTransform:'capitalize' }}>{b.status}</span>
@@ -126,16 +126,28 @@ export default function AdminBookings() {
                 <h3 style={{ color:'#e8f5ec', fontFamily:"'Syne',sans-serif", fontWeight:800, fontSize:'1.1rem', margin:0 }}>Booking Details</h3>
                 <button onClick={()=>setSelected(null)} style={{ background:'none', border:'none', color:'rgba(232,245,236,0.35)', fontSize:'20px', cursor:'pointer' }}>×</button>
               </div>
-              {[['Name',selected.name],['Email',selected.email],['Company',selected.company||'—'],['Phone',selected.phone||'—'],['Preferred Time',selected.preferredTime||'—'],['Timezone',selected.timezone||'—'],['Status',selected.status],['Date',fmt(selected.createdAt)]].map(([l,v],i)=>(
+              {[
+                ['Name', selected.name],
+                ['Email', selected.email],
+                ['WhatsApp', selected.whatsapp || '—'],
+                ['Phone', selected.phone || '—'],
+                ['Company', selected.company || '—'],
+                ['Service Needed', selected.service || '—'],
+                ['Booking Date', selected.date ? new Date(selected.date + 'T00:00').toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : '—'],
+                ['Preferred Time', selected.time || selected.preferredTime || '—'],
+                ['Timezone', selected.timezone || '—'],
+                ['Status', selected.status],
+                ['Date Created', fmt(selected.createdAt)]
+              ].map(([l,v],i)=>(
                 <div key={i} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'9px 0', borderBottom:'1px solid rgba(82,183,136,0.05)' }}>
                   <span style={{ color:'rgba(232,245,236,0.3)', fontSize:'12px' }}>{l}</span>
-                  <span style={{ color:'#e8f5ec', fontSize:'12px', fontWeight:600, textTransform:'capitalize' }}>{v}</span>
+                  <span style={{ color:'#e8f5ec', fontSize:'12px', fontWeight:600, textTransform: l === 'Email' ? 'none' : 'capitalize' }}>{v}</span>
                 </div>
               ))}
-              {selected.notes && (
+              {(selected.reason || selected.notes) && (
                 <div style={{ marginTop:'14px' }}>
-                  <p style={{ color:'rgba(232,245,236,0.3)', fontSize:'11px', marginBottom:'8px' }}>Notes</p>
-                  <p style={{ color:'rgba(232,245,236,0.65)', fontSize:'13px', lineHeight:1.7, background:'rgba(82,183,136,0.04)', borderRadius:'10px', padding:'12px', margin:0 }}>{selected.notes}</p>
+                  <p style={{ color:'rgba(232,245,236,0.3)', fontSize:'11px', marginBottom:'8px' }}>Project Context / Notes</p>
+                  <p style={{ color:'rgba(232,245,236,0.65)', fontSize:'13px', lineHeight:1.7, background:'rgba(82,183,136,0.04)', borderRadius:'10px', padding:'12px', margin:0 }}>{selected.reason || selected.notes}</p>
                 </div>
               )}
               <div style={{ display:'flex', gap:'10px', marginTop:'20px' }}>

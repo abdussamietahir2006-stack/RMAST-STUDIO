@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '@/lib/api';
 
-interface Lead { _id: string; name: string; email: string; company?: string; phone?: string; message: string; source: string; status: string; createdAt: string; }
+interface Lead { _id: string; name: string; email: string; company?: string; phone?: string; message: string; source: string; status: string; createdAt: string; service?: string; }
 
 const statusColor = (s: string) => ({ new:'#52b788', contacted:'#00e5ff', qualified:'#ffca28', converted:'#76ff03', lost:'#ff6b6b' }[s] || 'rgba(232,245,236,0.3)');
 const fmt = (d: string) => new Date(d).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
@@ -73,7 +73,7 @@ export default function AdminLeads() {
           <table style={{ width:'100%', borderCollapse:'collapse' }}>
             <thead>
               <tr style={{ borderBottom:'1px solid rgba(82,183,136,0.07)' }}>
-                {['Name','Email','Source','Date','Status','Actions'].map(h=>(
+                {['Name','Email','Service / Source','Date','Status','Actions'].map(h=>(
                   <th key={h} style={{ padding:'12px 16px', textAlign:'left', color:'rgba(232,245,236,0.2)', fontSize:'10px', fontWeight:700, letterSpacing:'2px', textTransform:'uppercase', whiteSpace:'nowrap' }}>{h}</th>
                 ))}
               </tr>
@@ -92,7 +92,8 @@ export default function AdminLeads() {
                   </td>
                   <td style={{ padding:'12px 16px', color:'rgba(232,245,236,0.45)', fontSize:'13px' }}>{lead.email}</td>
                   <td style={{ padding:'12px 16px' }}>
-                    <span style={{ padding:'3px 8px', borderRadius:'6px', background:'rgba(82,183,136,0.08)', color:'#52b788', fontSize:'10px', fontWeight:700 }}>{lead.source}</span>
+                    <p style={{ margin: 0, fontSize:'13px', color: '#e8f5ec' }}>{lead.service || '—'}</p>
+                    <p style={{ margin: 0, color:'rgba(232,245,236,0.25)', fontSize:'11px' }}>Source: {lead.source}</p>
                   </td>
                   <td style={{ padding:'12px 16px', color:'rgba(232,245,236,0.25)', fontSize:'12px', whiteSpace:'nowrap' }}>{fmt(lead.createdAt)}</td>
                   <td style={{ padding:'12px 16px' }}>
@@ -124,10 +125,19 @@ export default function AdminLeads() {
                 <h3 style={{ color:'#e8f5ec', fontFamily:"'Syne',sans-serif", fontWeight:800, fontSize:'1.1rem', margin:0 }}>Lead Details</h3>
                 <button onClick={()=>setSelected(null)} style={{ background:'none', border:'none', color:'rgba(232,245,236,0.35)', fontSize:'20px', cursor:'pointer', lineHeight:1 }}>×</button>
               </div>
-              {[['Name',selected.name],['Email',selected.email],['Company',selected.company||'—'],['Phone',selected.phone||'—'],['Source',selected.source],['Status',selected.status],['Date',fmt(selected.createdAt)]].map(([l,v],i)=>(
+              {[
+                ['Name', selected.name],
+                ['Email', selected.email],
+                ['Phone', selected.phone || '—'],
+                ['Company', selected.company || '—'],
+                ['Service Needed', selected.service || '—'],
+                ['Source', selected.source],
+                ['Status', selected.status],
+                ['Date Received', fmt(selected.createdAt)]
+              ].map(([l,v],i)=>(
                 <div key={i} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'9px 0', borderBottom:'1px solid rgba(82,183,136,0.05)' }}>
                   <span style={{ color:'rgba(232,245,236,0.3)', fontSize:'12px' }}>{l}</span>
-                  <span style={{ color:'#e8f5ec', fontSize:'12px', fontWeight:600 }}>{v}</span>
+                  <span style={{ color:'#e8f5ec', fontSize:'12px', fontWeight:600, textTransform: l === 'Email' ? 'none' : 'capitalize' }}>{v}</span>
                 </div>
               ))}
               <div style={{ marginTop:'14px' }}>

@@ -27,9 +27,9 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     await connectDB();
-    const { name, email, message, company, phone, source } = await req.json();
+    const { name, email, message, company, phone, source, service } = await req.json();
     if (!name || !email || !message) return err('Name, email and message are required.');
-    const lead = await Lead.create({ name, email, message, company, phone, source });
+    const lead = await Lead.create({ name, email, message, company, phone, source, service });
     return ok(lead, 'Message received. We will get back to you within 24 hours.', 201);
   } catch { return err('Server error.', 500); }
 }
