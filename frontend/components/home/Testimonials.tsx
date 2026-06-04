@@ -958,8 +958,9 @@ export default function Testimonials() {
         return; // silently fail, keep using fallback testimonials
       }
       const data = await res.json();
-      if (data.success && Array.isArray(data.data) && data.data.length > 0) {
-        const mapped = data.data.map((t: any, i: number) => ({
+      const list = data.data?.testimonials || data.data;
+      if (data.success && Array.isArray(list) && list.length > 0) {
+        const mapped = list.map((t: any, i: number) => ({
           _id: t._id || `live-${i}`,
           quote: t.quote,
           name: t.name,

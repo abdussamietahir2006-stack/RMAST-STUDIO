@@ -47,6 +47,7 @@ const TestimonialSchema = new Schema({
   metricLabel: { type: String },
   avatarImage: { type: String },
   approved:    { type: Boolean, default: false },
+  showOnWebsite: { type: Boolean, default: true },
 }, { timestamps: true });
 
 // ── Project ───────────────────────────────────────────────────────────────────

@@ -8,9 +8,14 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   if (!authenticate(req)) return err('Unauthorized.', 401);
   await connectDB();
   const { id } = await params;
-  const { approved } = await req.json();
-  if (typeof approved !== 'boolean') return err('approved must be a boolean.');
-  const t = await Testimonial.findByIdAndUpdate(id, { approved }, { new: true }).lean();
+  const { approved, showOnWebsite } = await req.json();
+  const updateData: Record<string, unknown> = {};
+  if (typeof approved === 'boolean') updateData.approved = approved;
+  if (typeof showOnWebsite === 'boolean') updateData.showOnWebsite = showOnWebsite;
+
+  if (Object.keys(updateData).length === 0) return err('No fields to update.');
+
+  const t = await Testimonial.findByIdAndUpdate(id, updateData, { new: true }).lean();
   if (!t) return err('Testimonial not found.', 404);
-  return ok(t, `Testimonial ${approved ? 'approved' : 'rejected'}.`);
+  return ok(t, 'Testimonial status updated.');
 }

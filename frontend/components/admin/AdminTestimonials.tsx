@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '@/lib/api';
 
-interface Testimonial { _id: string; name: string; role?: string; company?: string; quote: string; service?: string; rating: number; metric?: string; metricLabel?: string; avatarImage?: string; approved: boolean; createdAt: string; }
+interface Testimonial { _id: string; name: string; role?: string; company?: string; quote: string; service?: string; rating: number; metric?: string; metricLabel?: string; avatarImage?: string; approved: boolean; createdAt: string; showOnWebsite?: boolean; }
 
 const fmt = (d: string) => new Date(d).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
 
@@ -27,6 +27,11 @@ export default function AdminTestimonials() {
 
   const toggleApprove = async (id: string, approved: boolean) => {
     await api.patch(`/api/testimonials/${id}/approve`, { approved });
+    fetch_(); setSelected(null);
+  };
+ 
+  const toggleShowOnWebsite = async (id: string, showOnWebsite: boolean) => {
+    await api.patch(`/api/testimonials/${id}/approve`, { showOnWebsite });
     fetch_(); setSelected(null);
   };
 
@@ -109,10 +114,31 @@ export default function AdminTestimonials() {
               </p>
 
               {/* Tags */}
-              <div style={{ display:'flex', gap:'6px', flexWrap:'wrap', marginBottom:'14px' }}>
+              <div style={{ display:'flex', gap:'6px', flexWrap:'wrap', marginBottom:'12px' }}>
                 {t.service && <span style={{ padding:'2px 8px', borderRadius:'6px', background:'rgba(82,183,136,0.07)', color:'#52b788', fontSize:'10px', fontWeight:600 }}>{t.service}</span>}
                 {t.metric && <span style={{ padding:'2px 8px', borderRadius:'6px', background:'rgba(0,229,255,0.07)', color:'#00e5ff', fontSize:'10px', fontWeight:700 }}>{t.metric} {t.metricLabel}</span>}
                 <span style={{ padding:'2px 8px', borderRadius:'6px', background:'rgba(232,245,236,0.04)', color:'rgba(232,245,236,0.3)', fontSize:'10px' }}>{fmt(t.createdAt)}</span>
+              </div>
+
+              {/* Show on Website Toggle */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', background: 'rgba(82,183,136,0.02)', padding: '6px 12px', borderRadius: '10px', border: '1px solid rgba(82,183,136,0.05)' }}>
+                <span style={{ color: 'rgba(232,245,236,0.45)', fontSize: '11px', fontWeight: 600 }}>Show on Website</span>
+                <button
+                  onClick={() => toggleShowOnWebsite(t._id, t.showOnWebsite !== false ? false : true)}
+                  style={{
+                    border: 'none',
+                    background: t.showOnWebsite !== false ? 'rgba(82,183,136,0.12)' : 'rgba(255,107,107,0.08)',
+                    color: t.showOnWebsite !== false ? '#52b788' : '#ff6b6b',
+                    padding: '3px 8px',
+                    borderRadius: '6px',
+                    fontSize: '10px',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    transition: 'all 0.2s',
+                  }}
+                >
+                  {t.showOnWebsite !== false ? '✓ Yes' : '✕ No'}
+                </button>
               </div>
 
               {/* Actions */}
@@ -161,7 +187,13 @@ export default function AdminTestimonials() {
                   <span style={{ color:'#ffca28', fontSize:'13px' }}>{'★'.repeat(selected.rating)}</span>
                 </div>
               </div>
-              {[['Service',selected.service||'—'],['Metric',selected.metric?`${selected.metric} ${selected.metricLabel}`:'—'],['Status',selected.approved?'Approved':'Pending Approval'],['Date',fmt(selected.createdAt)]].map(([l,v],i)=>(
+              {[
+                ['Service', selected.service || '—'],
+                ['Metric', selected.metric ? `${selected.metric} ${selected.metricLabel}` : '—'],
+                ['Status', selected.approved ? 'Approved' : 'Pending Approval'],
+                ['Show on Website', selected.showOnWebsite !== false ? 'Yes' : 'No'],
+                ['Date', fmt(selected.createdAt)]
+              ].map(([l,v],i)=>(
                 <div key={i} style={{ display:'flex', justifyContent:'space-between', padding:'9px 0', borderBottom:'1px solid rgba(82,183,136,0.05)' }}>
                   <span style={{ color:'rgba(232,245,236,0.3)', fontSize:'12px' }}>{l}</span>
                   <span style={{ color:'#e8f5ec', fontSize:'12px', fontWeight:600 }}>{v}</span>
@@ -175,6 +207,10 @@ export default function AdminTestimonials() {
                 <button onClick={()=>toggleApprove(selected._id,!selected.approved)}
                   style={{ flex:2, padding:'12px', borderRadius:'12px', background:selected.approved?'rgba(255,107,107,0.1)':'rgba(82,183,136,0.15)', border:`1px solid ${selected.approved?'rgba(255,107,107,0.25)':'rgba(82,183,136,0.35)'}`, color:selected.approved?'#ff6b6b':'#52b788', fontWeight:700, fontSize:'13px', cursor:'pointer' }}>
                   {selected.approved?'Reject Review':'Approve Review'}
+                </button>
+                <button onClick={()=>toggleShowOnWebsite(selected._id, selected.showOnWebsite !== false ? false : true)}
+                  style={{ flex:2, padding:'12px', borderRadius:'12px', background:selected.showOnWebsite !== false ? 'rgba(255,107,107,0.1)' : 'rgba(82,183,136,0.15)', border:`1px solid ${selected.showOnWebsite !== false ? 'rgba(255,107,107,0.25)' : 'rgba(82,183,136,0.35)'}`, color:selected.showOnWebsite !== false ? '#ff6b6b' : '#52b788', fontWeight:700, fontSize:'13px', cursor:'pointer' }}>
+                  {selected.showOnWebsite !== false ? 'Hide from Site' : 'Show on Site'}
                 </button>
                 <button onClick={()=>{setSelected(null);setDeleteConfirm(selected._id);}}
                   style={{ flex:1, padding:'12px', borderRadius:'12px', background:'rgba(255,107,107,0.08)', border:'1px solid rgba(255,107,107,0.2)', color:'#ff6b6b', fontSize:'13px', cursor:'pointer' }}>Delete</button>

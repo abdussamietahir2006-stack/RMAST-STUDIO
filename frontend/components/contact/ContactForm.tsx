@@ -86,8 +86,9 @@ function ServiceSelect({ value, onChange }: { value: string; onChange: (v: strin
       transition={{ delay: 0.25 }}
       style={{ position: 'relative', zIndex: 10 }}
     >
-      <label style={{ display: 'block', color: 'rgba(232,245,236,0.25)', fontSize: '10px', fontWeight: 700, letterSpacing: '2.5px', textTransform: 'uppercase', marginBottom: 10 }}>
+      <label style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'rgba(232,245,236,0.25)', fontSize: '10px', fontWeight: 700, letterSpacing: '2.5px', textTransform: 'uppercase', marginBottom: 10 }}>
         Service Needed
+        <span style={{ color: '#52b788', fontSize: 16 }}>*</span>
       </label>
       <motion.button
         type="button"
@@ -178,7 +179,7 @@ export default function ContactForm({ data = {} }: { data?: Record<string, strin
   const glX  = useSpring(useTransform(rawX, [-0.5, 0.5], [15, 85]), sp);
   const glY  = useSpring(useTransform(rawY, [-0.5, 0.5], [15, 85]), sp);
 
-  const [form, setForm] = useState({ name: '', email: '', phone: '', service: '', message: '' });
+  const [form, setForm] = useState({ name: '', email: '', phone: '', company: '', service: '', source: 'contact_form', message: '' });
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [focusMsg, setFocusMsg] = useState(false);
@@ -193,8 +194,9 @@ export default function ContactForm({ data = {} }: { data?: Record<string, strin
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!form.name.trim() || !form.email.trim() || !form.message.trim()) {
-      toast.error('Please fill in all required fields');
+    const isFormValid = form.name.trim() && form.email.trim() && form.phone.trim() && form.company.trim() && form.service.trim() && form.message.trim();
+    if (!isFormValid) {
+      toast.error('Please fill in all fields');
       return;
     }
     setLoading(true);
@@ -206,7 +208,7 @@ export default function ContactForm({ data = {} }: { data?: Record<string, strin
       const data = await res.json();
       if (res.ok) {
         setSubmitted(true);
-        setForm({ name: '', email: '', phone: '', service: '', message: '' });
+        setForm({ name: '', email: '', phone: '', company: '', service: '', source: 'contact_form', message: '' });
         toast.success("Message sent! I'll get back to you soon.");
         setTimeout(() => setSubmitted(false), 4000);
       } else {
@@ -218,6 +220,8 @@ export default function ContactForm({ data = {} }: { data?: Record<string, strin
     }
     finally { setLoading(false); }
   };
+
+  const isFormValid = !!(form.name.trim() && form.email.trim() && form.phone.trim() && form.company.trim() && form.service.trim() && form.message.trim());
 
   const contactItems = [
     { icon: '📧', label: 'Email', val: data.email || 'hello@rmast.dev', accent: '#52b788' },
@@ -317,7 +321,10 @@ export default function ContactForm({ data = {} }: { data?: Record<string, strin
                 <Field label="Email" name="email" value={form.email} onChange={v => setForm(f => ({ ...f, email: v }))} placeholder="you@email.com" type="email" required delay={0.1} />
               </div>
 
-              <Field label="Phone (optional)" name="phone" value={form.phone} onChange={v => setForm(f => ({ ...f, phone: v }))} placeholder="+92 300 000 0000" delay={0.15} />
+              <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 16 }}>
+                <Field label="Phone" name="phone" value={form.phone} onChange={v => setForm(f => ({ ...f, phone: v }))} placeholder="+92 300 000 0000" required delay={0.15} />
+                <Field label="Company" name="company" value={form.company} onChange={v => setForm(f => ({ ...f, company: v }))} placeholder="Tech Ltd." required delay={0.2} />
+              </div>
 
               <ServiceSelect value={form.service} onChange={v => setForm(f => ({ ...f, service: v }))} />
 
@@ -355,14 +362,14 @@ export default function ContactForm({ data = {} }: { data?: Record<string, strin
               {/* Submit */}
               <motion.button
                 type="submit"
-                disabled={loading || !form.name || !form.email || !form.message}
-                whileHover={(!loading && form.name && form.email && form.message) ? { scale: 1.03, boxShadow: '0 0 40px rgba(82,183,136,0.4)' } : {}}
+                disabled={loading || !isFormValid}
+                whileHover={(!loading && isFormValid) ? { scale: 1.03, boxShadow: '0 0 40px rgba(82,183,136,0.4)' } : {}}
                 whileTap={{ scale: 0.97 }}
                 animate={{
-                  background: (!loading && form.name && form.email && form.message) ? '#52b788' : 'rgba(82,183,136,0.1)',
-                  color: (!loading && form.name && form.email && form.message) ? '#060d0b' : 'rgba(232,245,236,0.2)',
+                  background: (!loading && isFormValid) ? '#52b788' : 'rgba(82,183,136,0.1)',
+                  color: (!loading && isFormValid) ? '#060d0b' : 'rgba(232,245,236,0.2)',
                 }}
-                style={{ padding: '16px', borderRadius: 14, border: 'none', fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: '14px', letterSpacing: '2px', textTransform: 'uppercase', cursor: (!loading && form.name && form.email && form.message) ? 'pointer' : 'not-allowed' }}
+                style={{ padding: '16px', borderRadius: 14, border: 'none', fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: '14px', letterSpacing: '2px', textTransform: 'uppercase', cursor: (!loading && isFormValid) ? 'pointer' : 'not-allowed' }}
               >
                 {loading
                   ? <motion.span animate={{ opacity: [1, 0.4, 1] }} transition={{ duration: 1, repeat: Infinity }}>⏳ Sending...</motion.span>

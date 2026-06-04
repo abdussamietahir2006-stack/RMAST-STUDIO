@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useCallback } from 'react';
+import { useRef, useState, useCallback, useEffect } from 'react';
 import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 
@@ -150,9 +150,9 @@ function StepIndicator({ step }: { step: Step }) {
 }
 
 // ── Animated input ────────────────────────────────────────────────────────────
-function AnimInput({ label, value, onChange, placeholder, type = 'text', delay = 0 }: {
+function AnimInput({ label, value, onChange, placeholder, type = 'text', required = false, delay = 0 }: {
   label: string; value: string; onChange: (v: string) => void;
-  placeholder: string; type?: string; delay?: number;
+  placeholder: string; type?: string; required?: boolean; delay?: number;
 }) {
   const [focused, setFocused] = useState(false);
   return (
@@ -164,6 +164,7 @@ function AnimInput({ label, value, onChange, placeholder, type = 'text', delay =
     >
       <label style={{ display: 'block', color: focused ? '#52b788' : 'rgba(232,245,236,0.35)', fontSize: '10px', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: 8, transition: 'color 0.2s' }}>
         {label}
+        {required && <span style={{ color: '#ffca28', marginLeft: 4 }}>*</span>}
       </label>
       <motion.input
         type={type}
@@ -172,6 +173,7 @@ function AnimInput({ label, value, onChange, placeholder, type = 'text', delay =
         placeholder={placeholder}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
+        required={required}
         animate={{
           borderColor: focused ? '#52b788' : 'rgba(82,183,136,0.18)',
           boxShadow: focused ? '0 0 24px rgba(82,183,136,0.2), inset 0 0 12px rgba(82,183,136,0.03)' : 'none',
@@ -194,18 +196,29 @@ function AnimInput({ label, value, onChange, placeholder, type = 'text', delay =
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 export default function ContactBooking() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const update = () => setIsMobile(window.innerWidth < 768);
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
+
   const [step, setStep] = useState<Step>(1);
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
-  const [form, setForm] = useState({ name: '', email: '', whatsapp: '', service: '', reason: '' });
+  const [form, setForm] = useState({ name: '', email: '', whatsapp: '', phone: '', company: '', timezone: '', service: '', reason: '' });
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
   const times = ['9:00 AM', '11:00 AM', '1:00 PM', '3:00 PM', '5:00 PM', '7:00 PM'];
 
+  const isFormValid = !!(form.name.trim() && form.email.trim() && form.whatsapp.trim() && form.phone.trim() && form.company.trim() && form.timezone.trim() && form.service.trim() && form.reason.trim());
+
   const handleSubmit = async () => {
-    if (!form.name || !form.email) {
-      toast.error('Please fill in all required fields');
+    if (!isFormValid) {
+      toast.error('Please fill in all fields');
       return;
     }
     setLoading(true);
@@ -221,7 +234,7 @@ export default function ContactBooking() {
         toast.success("Booking confirmed! I'll reach out within 24 hours.");
         setTimeout(() => {
           setStep(1); setDate(''); setTime('');
-          setForm({ name: '', email: '', whatsapp: '', service: '', reason: '' });
+          setForm({ name: '', email: '', whatsapp: '', phone: '', company: '', timezone: '', service: '', reason: '' });
           setSubmitted(false);
         }, 3500);
       } else {
@@ -388,17 +401,29 @@ export default function ContactBooking() {
                     ))}
                   </div>
 
-                  <AnimInput label="Full Name" value={form.name} onChange={v => setForm(f => ({ ...f, name: v }))} placeholder="Raja Muhammad..." delay={0.05} />
-                  <AnimInput label="Email" value={form.email} onChange={v => setForm(f => ({ ...f, email: v }))} placeholder="you@example.com" type="email" delay={0.1} />
-                  <AnimInput label="WhatsApp (optional)" value={form.whatsapp} onChange={v => setForm(f => ({ ...f, whatsapp: v }))} placeholder="+92 300 000 0000" delay={0.15} />
-                  <AnimInput label="Service Needed" value={form.service} onChange={v => setForm(f => ({ ...f, service: v }))} placeholder="Web Development, UI/UX, etc." delay={0.2} />
+                  <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '16px' }}>
+                    <AnimInput label="Full Name" value={form.name} onChange={v => setForm(f => ({ ...f, name: v }))} placeholder="Raja Ahmed" required={true} delay={0.05} />
+                    <AnimInput label="Email" value={form.email} onChange={v => setForm(f => ({ ...f, email: v }))} placeholder="you@example.com" type="email" required={true} delay={0.1} />
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '16px' }}>
+                    <AnimInput label="WhatsApp" value={form.whatsapp} onChange={v => setForm(f => ({ ...f, whatsapp: v }))} placeholder="+92 300 000 0000" required={true} delay={0.15} />
+                    <AnimInput label="Phone" value={form.phone} onChange={v => setForm(f => ({ ...f, phone: v }))} placeholder="+92 300 000 0000" required={true} delay={0.2} />
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '16px' }}>
+                    <AnimInput label="Company" value={form.company} onChange={v => setForm(f => ({ ...f, company: v }))} placeholder="Tech Ltd." required={true} delay={0.25} />
+                    <AnimInput label="Timezone" value={form.timezone} onChange={v => setForm(f => ({ ...f, timezone: v }))} placeholder="GMT+5, EST, etc." required={true} delay={0.3} />
+                  </div>
+                  <AnimInput label="Service Needed" value={form.service} onChange={v => setForm(f => ({ ...f, service: v }))} placeholder="Web Development, UI/UX, etc." required={true} delay={0.35} />
 
                   <motion.div initial={{ opacity: 0, x: -28 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }} style={{ marginBottom: 28 }}>
-                    <label style={{ display: 'block', color: 'rgba(232,245,236,0.35)', fontSize: '10px', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: 8 }}>About Your Project</label>
+                    <label style={{ display: 'block', color: 'rgba(232,245,236,0.35)', fontSize: '10px', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: 8 }}>
+                      About Your Project <span style={{ color: '#ffca28' }}>*</span>
+                    </label>
                     <motion.textarea
                       value={form.reason}
                       onChange={e => setForm(f => ({ ...f, reason: e.target.value }))}
                       placeholder="Tell me about your project — what are you building?"
+                      required={true}
                       rows={4}
                       whileFocus={{ borderColor: '#ffca28', boxShadow: '0 0 20px rgba(255,202,40,0.15)' }}
                       style={{ width: '100%', padding: '14px 18px', borderRadius: 14, border: '1px solid rgba(255,202,40,0.15)', background: 'rgba(255,255,255,0.025)', color: '#e8f5ec', fontFamily: "'DM Sans', sans-serif", fontSize: '0.9rem', outline: 'none', resize: 'vertical', boxSizing: 'border-box' }}
@@ -410,10 +435,10 @@ export default function ContactBooking() {
                       style={{ flex: 1, padding: '14px', borderRadius: 14, border: '1px solid rgba(255,255,255,0.1)', background: 'transparent', color: 'rgba(232,245,236,0.5)', fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: '13px', cursor: 'pointer' }}>
                       ← Back
                     </motion.button>
-                    <motion.button onClick={handleSubmit} disabled={loading || !form.name || !form.email}
-                      whileHover={(!loading && form.name && form.email) ? { scale: 1.03, boxShadow: '0 0 40px rgba(255,202,40,0.3)' } : {}}
+                    <motion.button onClick={handleSubmit} disabled={loading || !isFormValid}
+                      whileHover={(!loading && isFormValid) ? { scale: 1.03, boxShadow: '0 0 40px rgba(255,202,40,0.3)' } : {}}
                       whileTap={{ scale: 0.96 }}
-                      style={{ flex: 2, padding: '14px', borderRadius: 14, background: (!loading && form.name && form.email) ? '#ffca28' : 'rgba(255,202,40,0.1)', color: (!loading && form.name && form.email) ? '#060d0b' : 'rgba(232,245,236,0.25)', border: 'none', fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: '13px', letterSpacing: '1.5px', textTransform: 'uppercase', cursor: (!loading && form.name && form.email) ? 'pointer' : 'not-allowed' }}>
+                      style={{ flex: 2, padding: '14px', borderRadius: 14, background: (!loading && isFormValid) ? '#ffca28' : 'rgba(255,202,40,0.1)', color: (!loading && isFormValid) ? '#060d0b' : 'rgba(232,245,236,0.25)', border: 'none', fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: '13px', letterSpacing: '1.5px', textTransform: 'uppercase', cursor: (!loading && isFormValid) ? 'pointer' : 'not-allowed' }}>
                       {loading
                         ? <motion.span animate={{ opacity: [1, 0.5, 1] }} transition={{ duration: 1, repeat: Infinity }}>⏳ Confirming...</motion.span>
                         : '🚀 Confirm Booking'}
