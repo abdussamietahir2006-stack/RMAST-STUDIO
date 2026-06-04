@@ -1,0 +1,112 @@
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+* {
+  box-sizing: border-box;
+}
+@import "tailwindcss";
+
+/* 🌲 FOREST THEME VARIABLES */
+:root {
+  /* BASE COLORS */
+  --black: #07130f;
+  --black-2: #0b1f18;
+
+  --accent: #52b788;
+  --accent-soft: #74c69d;
+
+  --ivory: #e8f5ec;
+  --ivory-dim: rgba(232, 245, 236, 0.6);
+
+  --border: rgba(200, 255, 220, 0.12);
+
+  /* BACKGROUND SYSTEM */
+  --background: linear-gradient(180deg, #07130f 0%, #0b1f18 100%);
+  --foreground: #e8f5ec;
+}
+
+/* 🌙 DARK MODE (keep consistent, not white switch) */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: linear-gradient(180deg, #07130f 0%, #0b1f18 100%);
+    --foreground: #e8f5ec;
+  }
+}
+
+/* 🧠 TAILWIND THEME BRIDGE */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+}
+
+/* 🌿 BASE BODY */
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+
+  /* smooth rendering */
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* 🌫️ GLOBAL SCROLLBAR (forest style) */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #07130f;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(82, 183, 136, 0.4);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(82, 183, 136, 0.7);
+}
+
+/* ✨ SELECTION COLOR */
+::selection {
+  background: rgba(82, 183, 136, 0.3);
+  color: #e8f5ec;
+}
+
+/* 🎨 SYNE FONT */
+.font-syne,
+[style*="font-family: 'Syne'"],
+[style*='font-family: Syne'] {
+  font-family: var(--font-syne), sans-serif;
+}
+
+/* ✨ KEYFRAMES */
+@keyframes pulseDot {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.35;
+    transform: scale(1.6);
+  }
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: 1000;
+  }
+}
+
+@keyframes scroll {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
