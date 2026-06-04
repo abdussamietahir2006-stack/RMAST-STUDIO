@@ -4,7 +4,7 @@
 
 <p>Personal portfolio & studio website for RMAST Studio — a full-stack digital studio building products for founders and brands worldwide.</p>
 
-[![Website](https://img.shields.io/badge/Website-rmaststudio.com-52b788?style=for-the-badge&logo=google-chrome&logoColor=white)]((https://rmast-studio.vercel.app/))
+[![Website](https://img.shields.io/badge/Website-rmast-studio.vercel.app/-52b788?style=for-the-badge&logo=google-chrome&logoColor=white)]((https://rmast-studio.vercel.app/))
 [![Status](https://img.shields.io/badge/Status-Live-52b788?style=for-the-badge)]()
 [![Next.js](https://img.shields.io/badge/Next.js-16.2.4-000?style=for-the-badge&logo=nextdotjs)]()
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-007ACC?style=for-the-badge&logo=typescript)]()
