@@ -4,10 +4,7 @@ import { Testimonial } from '@/models/index';
 import { authenticate } from '@/lib/auth';
 import { ok, err } from '@/lib/response';
 
-export async function GET(req: NextRequest) {
-  await connectDB();
-
-  // Auto-seed if collection is empty
+export async function seedDefaultTestimonials() {
   const count = await Testimonial.countDocuments();
   if (count === 0) {
     await Testimonial.insertMany([
@@ -65,6 +62,11 @@ export async function GET(req: NextRequest) {
       }
     ]);
   }
+}
+
+export async function GET(req: NextRequest) {
+  await connectDB();
+  await seedDefaultTestimonials();
 
   const { searchParams } = new URL(req.url);
   const approvedParam = searchParams.get('approved');
@@ -90,10 +92,11 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     await connectDB();
+    await seedDefaultTestimonials();
     const body = await req.json();
     if (!body.name || !body.quote) return err('Name and quote are required.');
     if (body.quote.length < 20) return err('Quote must be at least 20 characters.');
-    const testimonial = await Testimonial.create({ ...body, approved: false });
+    const testimonial = await Testimonial.create({ ...body, approved: false, showOnWebsite: false });
     return ok(testimonial, 'Review submitted. It will appear after approval.', 201);
   } catch { return err('Server error.', 500); }
 }

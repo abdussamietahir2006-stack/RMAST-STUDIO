@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useState, FormEvent } from 'react';
 import toast from 'react-hot-toast';
 
@@ -13,6 +13,7 @@ export default function Newsletter({ data = {} }: NewsletterCMSData) {
   const newsletterSubtext = data.newsletterSubtext || 'Get insights, updates, and new projects delivered to your inbox.';
   const [email, setEmail] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
+  const [subscribed, setSubscribed] = useState<boolean>(false);
 
   const handleSubscribe = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -35,7 +36,9 @@ export default function Newsletter({ data = {} }: NewsletterCMSData) {
       const data = await res.json().catch(() => ({}));
       if (res.ok) {
         toast.success("You're subscribed! Check your inbox.");
+        setSubscribed(true);
         setEmail('');
+        setTimeout(() => setSubscribed(false), 5000);
       } else {
         toast.error(data.error || 'Failed to subscribe');
       }
@@ -131,67 +134,97 @@ export default function Newsletter({ data = {} }: NewsletterCMSData) {
           {newsletterSubtext}
         </motion.p>
 
-        <motion.form
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: false }}
-          transition={{ delay: 0.3 }}
-          onSubmit={handleSubscribe}
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            gap: '1rem',
-            flexWrap: 'wrap',
-            marginBottom: '2rem',
-          }}
-        >
-          <motion.input
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="your@email.com"
-            type="email"
-            required
-            disabled={loading}
-            whileFocus={{
-              borderColor: '#52b788',
-              boxShadow: '0 0 20px rgba(82,183,136,0.2)',
-            }}
-            style={{
-              flex: 1,
-              minWidth: '250px',
-              padding: '0.9rem 1.2rem',
-              borderRadius: '12px',
-              border: '1px solid rgba(82,183,136,0.3)',
-              background: 'rgba(255,255,255,0.05)',
-              color: '#e8f5ec',
-              backdropFilter: 'blur(10px)',
-              fontSize: '0.95rem',
-              outline: 'none',
-              transition: 'all 0.3s',
-            }}
-          />
+        <AnimatePresence mode="wait">
+          {subscribed ? (
+            <motion.div
+              key="success"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              style={{
+                padding: '24px 32px',
+                borderRadius: '16px',
+                background: 'rgba(82,183,136,0.06)',
+                border: '1px solid rgba(82,183,136,0.25)',
+                maxWidth: '480px',
+                margin: '0 auto 2rem',
+                boxShadow: '0 8px 32px rgba(82,183,136,0.05)',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '8px'
+              }}
+            >
+              <div style={{ fontSize: '2.5rem' }}>🎉</div>
+              <h4 style={{ color: '#52b788', fontSize: '1.25rem', fontWeight: 800, margin: 0, fontFamily: "'Syne', sans-serif" }}>Subscribed Successfully!</h4>
+              <p style={{ color: 'rgba(232,245,236,0.65)', fontSize: '0.9rem', margin: 0, lineHeight: 1.5 }}>
+                Thank you! You have been successfully added to our newsletter. Check your inbox for updates.
+              </p>
+            </motion.div>
+          ) : (
+            <motion.form
+              key="form"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: false }}
+              transition={{ delay: 0.3 }}
+              onSubmit={handleSubscribe}
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                gap: '1rem',
+                flexWrap: 'wrap',
+                marginBottom: '2rem',
+              }}
+            >
+              <motion.input
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="your@email.com"
+                type="email"
+                required
+                disabled={loading}
+                whileFocus={{
+                  borderColor: '#52b788',
+                  boxShadow: '0 0 20px rgba(82,183,136,0.2)',
+                }}
+                style={{
+                  flex: 1,
+                  minWidth: '250px',
+                  padding: '0.9rem 1.2rem',
+                  borderRadius: '12px',
+                  border: '1px solid rgba(82,183,136,0.3)',
+                  background: 'rgba(255,255,255,0.05)',
+                  color: '#e8f5ec',
+                  backdropFilter: 'blur(10px)',
+                  fontSize: '0.95rem',
+                  outline: 'none',
+                  transition: 'all 0.3s',
+                }}
+              />
 
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            type="submit"
-            disabled={loading}
-            style={{
-              padding: '0.9rem 1.8rem',
-              borderRadius: '12px',
-              background: '#52b788',
-              color: '#07130f',
-              border: 'none',
-              fontWeight: 700,
-              cursor: loading ? 'not-allowed' : 'pointer',
-              opacity: loading ? 0.7 : 1,
-              fontSize: '0.95rem',
-            }}
-          >
-            {loading ? 'Subscribing...' : 'Subscribe'}
-          </motion.button>
-        </motion.form>
-        {/* message UI removed, only toast notifications remain */}
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                type="submit"
+                disabled={loading}
+                style={{
+                  padding: '0.9rem 1.8rem',
+                  borderRadius: '12px',
+                  background: '#52b788',
+                  color: '#07130f',
+                  border: 'none',
+                  fontWeight: 700,
+                  cursor: loading ? 'not-allowed' : 'pointer',
+                  opacity: loading ? 0.7 : 1,
+                  fontSize: '0.95rem',
+                }}
+              >
+                {loading ? 'Subscribing...' : 'Subscribe'}
+              </motion.button>
+            </motion.form>
+          )}
+        </AnimatePresence>
       </motion.div>
     </section>
   );
