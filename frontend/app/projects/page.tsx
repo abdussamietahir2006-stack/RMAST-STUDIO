@@ -7,6 +7,14 @@ import ProjectCTA from '../../components/projects/ProjectCTA';
 
 export const revalidate = 60;
 
+
+export const metadata = {
+  title: 'Projects',
+  description:
+    'Explore RMAST Studio projects — production-grade web apps, e-commerce platforms, portfolios, and digital products built with Next.js, React, and MongoDB.',
+  alternates: { canonical: '/projects' },
+}
+
 export default async function ProjectsPage() {
   const { content, images } = await getPageContent('projects-page');
 

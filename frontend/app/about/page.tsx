@@ -9,6 +9,14 @@ import AboutCTA from '../../components/about/AboutCTA';
 
 export const revalidate = 60;
 
+
+export const metadata = {
+  title: 'About',
+  description:
+    'Learn about RMAST Studio — a solo digital studio founded by Abdus Samie Tahir, building immersive digital products for founders and brands since 2021.',
+  alternates: { canonical: '/about' },
+}
+
 export default async function AboutPage() {
   const { content, images } = await getPageContent('about');
 

@@ -6,6 +6,13 @@ import ContactFAQ from '../../components/contact/ContactFAQ';
 
 export const revalidate = 60;
 
+export const metadata = {
+  title: 'Contact',
+  description:
+    'Get in touch with RMAST Studio. Book a discovery call, start a project, or ask about web development, design, and AI automation services.',
+  alternates: { canonical: '/contact' },
+}
+
 export default async function ContactPage() {
   const { content } = await getPageContent('contact');
 
