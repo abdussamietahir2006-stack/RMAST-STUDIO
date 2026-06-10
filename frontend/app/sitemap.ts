@@ -1,5 +1,7 @@
 import { MetadataRoute } from 'next'
 
+export const dynamic = 'force-dynamic'  // ← ADD THIS LINE
+
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
@@ -23,7 +25,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     {
       url: 'https://rmast-studio.vercel.app/services',
       lastModified: new Date(),
-      changeFrequency: 'weekly',
+      changeFrequency: 'monthly',
       priority: 0.9,
     },
     {
