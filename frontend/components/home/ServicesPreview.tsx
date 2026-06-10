@@ -372,7 +372,14 @@ function ServiceCard({ s, i }: { s: any; i: number }) {
             <motion.h3
               animate={{ color: hovered ? s.accent : '#f0faf4' }}
               transition={{ duration: 0.3 }}
-              style={{ fontSize: '1.15rem', fontWeight: 700, margin: '0 0 6px', letterSpacing: '-0.3px', lineHeight: 1.2 }}
+              style={{
+                fontFamily: "'Syne', sans-serif",
+                fontSize: '1.15rem',
+                fontWeight: 700,
+                margin: '0 0 6px',
+                letterSpacing: '-0.3px',
+                lineHeight: 1.2,
+              }}
             >
               {s.title}
             </motion.h3>
@@ -628,13 +635,29 @@ export default function ServicesPreview({ data = {} }: ServicesPreviewCMSData) {
         </motion.div>
 
         {/* Heading */}
-        <h2 style={{ fontSize: 'clamp(2.4rem, 5.5vw, 4.2rem)', fontWeight: 800, letterSpacing: '-2px', lineHeight: 1.02, color: '#f0faf5', marginBottom: '1.4rem' }}>
+        <h2 style={{
+          fontFamily: "'Syne', sans-serif",
+          fontSize: 'clamp(2.4rem, 5.5vw, 4.2rem)',
+          fontWeight: 800,
+          letterSpacing: '-2px',
+          lineHeight: 1.02,
+          color: '#f0faf5',
+          marginBottom: '1.4rem'
+        }}>
           {sectionHeading}{' '}
-          <span style={{ fontStyle: 'italic', fontWeight: 300, color: 'rgba(240,250,245,0.4)' }}>{sectionItalic}</span>
+          <span style={{
+            fontFamily: "'Syne', sans-serif",
+            fontStyle: 'italic',
+            fontWeight: 300,
+            color: '#52b788'
+          }}>{sectionItalic}</span>
           <br />
           <span style={{
-            background: 'linear-gradient(90deg, #00ffb3 0%, #7b61ff 40%, #ff6b35 70%, #ffdd00 100%)',
-            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+            fontFamily: "'Syne', sans-serif",
+            background: 'linear-gradient(90deg, #52b788 0%, #00e5ff 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
           }}>
             {sectionHighlight}
           </span>
@@ -685,12 +708,12 @@ export default function ServicesPreview({ data = {} }: ServicesPreviewCMSData) {
         </div>
 
         <motion.button
-          whileHover={{ scale: 1.04, boxShadow: '0 0 50px rgba(0,255,179,0.2), 0 0 100px rgba(0,255,179,0.08)' }}
+          whileHover={{ scale: 1.04, boxShadow: '0 0 50px rgba(82,183,136,0.2), 0 0 100px rgba(82,183,136,0.08)' }}
           whileTap={{ scale: 0.96 }}
           style={{
             padding: '1rem 3rem', borderRadius: '100px',
-            background: 'linear-gradient(135deg, rgba(0,255,179,0.12), rgba(123,97,255,0.12))',
-            border: '1px solid rgba(0,255,179,0.25)',
+            background: 'linear-gradient(135deg, rgba(82,183,136,0.12), rgba(0,229,255,0.12))',
+            border: '1px solid rgba(82,183,136,0.25)',
             color: '#e8f5ec', fontSize: '0.9rem', fontWeight: 700,
             letterSpacing: '0.08em', cursor: 'pointer',
             position: 'relative', overflow: 'hidden',
@@ -702,7 +725,7 @@ export default function ServicesPreview({ data = {} }: ServicesPreviewCMSData) {
             transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 2.5 }}
             style={{
               position: 'absolute', inset: 0,
-              background: 'linear-gradient(90deg, transparent, rgba(0,255,179,0.15), transparent)',
+              background: 'linear-gradient(90deg, transparent, rgba(82,183,136,0.15), transparent)',
               pointerEvents: 'none',
             }}
           />

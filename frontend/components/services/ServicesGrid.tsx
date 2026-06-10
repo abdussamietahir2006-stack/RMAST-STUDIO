@@ -258,8 +258,14 @@ function ServiceCard({ service, index }: { service: Service; index: number }) {
           {/* Title */}
           <h3 style={{
             fontFamily: "'Syne', sans-serif",
-            color: '#e8f5ec', fontSize: '1.6rem', fontWeight: 800,
-            margin: '0 0 14px', letterSpacing: '-0.5px', lineHeight: 1.1,
+            color: '#e8f5ec',
+            fontSize: 'clamp(1.2rem, 4.5vw, 1.45rem)',
+            fontWeight: 800,
+            margin: '0 0 14px',
+            letterSpacing: '-0.5px',
+            lineHeight: 1.1,
+            wordBreak: 'break-word',
+            overflowWrap: 'break-word',
           }}>
             {service.title}
           </h3>
@@ -446,7 +452,7 @@ export default function ServicesGrid({ data = {} }: ServicesGridCMSData) {
 
       {/* Cards grid */}
       <div style={{
-        display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+        display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
         gap: '24px', maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 1,
       }}>
         {finalServices.map((service, i) => (
