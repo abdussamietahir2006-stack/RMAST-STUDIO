@@ -2,6 +2,7 @@
 
 import { motion, useMotionValue, useSpring, useTransform, AnimatePresence, type Variants } from 'framer-motion';
 import { useRef, useState, useEffect, useMemo } from 'react';
+import Link from 'next/link';
 
 /* ════════════════════════
    CMS DATA TYPES
@@ -707,30 +708,36 @@ export default function ServicesPreview({ data = {} }: ServicesPreviewCMSData) {
           <div style={{ height: '1px', width: '60px', background: 'linear-gradient(90deg, rgba(82,183,136,0.3), transparent)' }} />
         </div>
 
-        <motion.button
-          whileHover={{ scale: 1.04, boxShadow: '0 0 50px rgba(82,183,136,0.2), 0 0 100px rgba(82,183,136,0.08)' }}
-          whileTap={{ scale: 0.96 }}
-          style={{
-            padding: '1rem 3rem', borderRadius: '100px',
-            background: 'linear-gradient(135deg, rgba(82,183,136,0.12), rgba(0,229,255,0.12))',
-            border: '1px solid rgba(82,183,136,0.25)',
-            color: '#e8f5ec', fontSize: '0.9rem', fontWeight: 700,
-            letterSpacing: '0.08em', cursor: 'pointer',
-            position: 'relative', overflow: 'hidden',
-            textTransform: 'uppercase',
-          }}
-        >
-          <motion.div
-            animate={{ x: ['-100%', '200%'] }}
-            transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 2.5 }}
+        <Link href="/services" passHref legacyBehavior>
+          <motion.a
+            whileHover={{ scale: 1.04, boxShadow: '0 0 50px rgba(82,183,136,0.2), 0 0 100px rgba(82,183,136,0.08)' }}
+            whileTap={{ scale: 0.96 }}
             style={{
-              position: 'absolute', inset: 0,
-              background: 'linear-gradient(90deg, transparent, rgba(82,183,136,0.15), transparent)',
-              pointerEvents: 'none',
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              textDecoration: 'none',
+              padding: '1rem 3rem', borderRadius: '100px',
+              background: 'linear-gradient(135deg, rgba(82,183,136,0.12), rgba(0,229,255,0.12))',
+              border: '1px solid rgba(82,183,136,0.25)',
+              color: '#e8f5ec', fontSize: '0.9rem', fontWeight: 700,
+              letterSpacing: '0.08em', cursor: 'pointer',
+              position: 'relative', overflow: 'hidden',
+              textTransform: 'uppercase',
             }}
-          />
-          Explore All Services →
-        </motion.button>
+          >
+            <motion.div
+              animate={{ x: ['-100%', '200%'] }}
+              transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 2.5 }}
+              style={{
+                position: 'absolute', inset: 0,
+                background: 'linear-gradient(90deg, transparent, rgba(82,183,136,0.15), transparent)',
+                pointerEvents: 'none',
+              }}
+            />
+            Explore All Services →
+          </motion.a>
+        </Link>
       </motion.div>
     </section>
   );

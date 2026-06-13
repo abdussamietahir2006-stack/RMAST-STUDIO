@@ -2,6 +2,7 @@
 
 import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from 'framer-motion';
 import { useRef, useState, useEffect, useCallback } from 'react';
+import Link from 'next/link';
 
 /* ─── DATA MAPPING ─── */
 const getOrbitalProject = (p: any, i: number, total: number) => {
@@ -494,12 +495,14 @@ export default function WorkGrid() {
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }}
         style={{ position: 'relative', zIndex: 20, textAlign: 'center', paddingBottom: '4rem' }}>
         <p style={{ color: 'rgba(200,234,214,0.2)', fontSize: '0.8rem', marginBottom: '1rem', letterSpacing: '0.05em' }}>Have a project in mind? Let&apos;s build it.</p>
-        <motion.button whileHover={{ scale: 1.05, boxShadow: '0 0 40px rgba(82,183,136,0.4)' }} whileTap={{ scale: 0.96 }}
-          style={{ padding: '0.85rem 2.2rem', borderRadius: '100px', background: 'linear-gradient(135deg, #52b788, #2d6a4f)', border: 'none', color: '#060f0c', fontWeight: 800, fontSize: '0.9rem', letterSpacing: '0.04em', cursor: 'pointer', position: 'relative', overflow: 'hidden' }}>
-          <motion.span animate={{ x: ['-100%', '200%'] }} transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 3 }}
-            style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)', pointerEvents: 'none' }} />
-          Start Your Project →
-        </motion.button>
+        <Link href="/contact" style={{ textDecoration: 'none' }}>
+          <motion.button whileHover={{ scale: 1.05, boxShadow: '0 0 40px rgba(82,183,136,0.4)' }} whileTap={{ scale: 0.96 }}
+            style={{ padding: '0.85rem 2.2rem', borderRadius: '100px', background: 'linear-gradient(135deg, #52b788, #2d6a4f)', border: 'none', color: '#060f0c', fontWeight: 800, fontSize: '0.9rem', letterSpacing: '0.04em', cursor: 'pointer', position: 'relative', overflow: 'hidden' }}>
+            <motion.span animate={{ x: ['-100%', '200%'] }} transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 3 }}
+              style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)', pointerEvents: 'none' }} />
+            Start Your Project →
+          </motion.button>
+        </Link>
       </motion.div>
 
       {/* ── DETAIL PANEL ── */}
